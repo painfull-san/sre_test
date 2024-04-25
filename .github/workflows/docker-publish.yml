@@ -8,6 +8,8 @@ name: Docker
 on:
   push:
     branches: [ "master" ]
+    tags:
+      - 'v*'
   pull_request:
     branches: [ "master" ]
 
@@ -75,3 +77,7 @@ jobs:
           platforms: linux/amd64,linux/arm64,linux/aarch64
           cache-from: type=gha
           cache-to: type=gha,mode=max
+      - name: Show image tags
+        env:
+          TAGS: ${{ steps.meta.outputs.tags }}
+        run: echo "${TAGS}"
