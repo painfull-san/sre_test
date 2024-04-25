@@ -1,0 +1,6 @@
+services:
+  pass_generator:
+    image: sre_test:3
+    stop_signal: SIGINT
+    ports:
+      - '80:80'
