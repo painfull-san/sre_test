@@ -64,10 +64,14 @@ jobs:
         uses: docker/metadata-action@96383f45573cb7f253c731d3b3ab81c87ef81934 # v5.0.0
         with:
           images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
-
-      - name: Set Docker tag
-        id: tag
-        uses: cytopia/docker-tag-action@v0.4.7
+          tags: |
+            type=schedule
+            type=ref,event=branch
+            type=ref,event=pr
+            type=semver,pattern={{version}}
+            type=semver,pattern={{major}}.{{minor}}
+            type=semver,pattern={{major}}
+            type=sha            
 
 
       # Build and push Docker image with Buildx (don't push on PR)
@@ -78,12 +82,12 @@ jobs:
         with:
           context: .
           push: ${{ github.event_name != 'pull_request' }}
-          tags: ${{ steps.tag.outputs.docker-tag }}
+          tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
           platforms: linux/amd64,linux/arm64,linux/aarch64
           cache-from: type=gha
           cache-to: type=gha,mode=max
       - name: Show image tags
         env:
-          TAGS: ${{ steps.tag.outputs.docker-tag }}
+          TAGS: ${{ steps.meta.outputs.tags }}
         run: echo "${TAGS}"
