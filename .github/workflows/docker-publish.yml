@@ -71,8 +71,25 @@ jobs:
             type=semver,pattern={{version}}
             type=semver,pattern={{major}}.{{minor}}
             type=semver,pattern={{major}}
-            type=sha            
-
+            type=sha
+            
+      - name: "Call API 1"
+        uses: indiesdev/curl@v1.1
+        id: api-get
+        with:
+          url: http://localhost:80/
+          method: "GET"
+          accept: 200
+          log-response: true
+      - name: "Call API 2"
+        uses: indiesdev/curl@v1.1
+        id: api2
+        with:
+          url: http://localhost:80/generate-passwords
+          method: "POST"
+          accept: 201
+          body: '{ "min_length": 16, "special_chars": 1, "numbers": 1, "num_passwords": 1 }'
+          log-response: true
 
       # Build and push Docker image with Buildx (don't push on PR)
       # https://github.com/docker/build-push-action
