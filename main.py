@@ -3,7 +3,7 @@ import random
 import string
 
 app = Flask(__name__)
-
+// Comment for testing
 def generate_password(length, special_chars, numbers):
     password = []
     password.extend(random.choices(string.ascii_letters, k=length - special_chars - numbers))
